@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.SERVER_URL,
+  baseURL: `${import.meta.env.VITE_SERVER_URL}/api`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -25,6 +25,16 @@ export const userLogin = async (credentials) => {
     return response.data;
   } catch (error) {
     console.error("Error logging in user:", error);
+    throw error;
+  }
+};
+
+export const userLogout = async () => {
+  try {
+    const response = await api.post("/users/logout");
+    return response.data;
+  } catch (error) {
+    console.error("Error logging out user:", error);
     throw error;
   }
 };

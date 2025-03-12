@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { userLogin, userSignup } from "../lib/api";
 import { Button, Input, Select } from "antd";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../lib/store/slices/authSlice";
 
 const AuthPage = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -18,6 +22,7 @@ const AuthPage = () => {
     profileUrl: "",
     password: "",
   });
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState("");
 
@@ -29,14 +34,17 @@ const AuthPage = () => {
     e.preventDefault();
     try {
       if (isLogin) {
-        await userLogin({
+        const response = await userLogin({
           email: formData.email,
           password: formData.password,
         });
+        const { token, data } = response;
+        dispatch(login({ token, user: data }));
       } else {
         await userSignup(formData);
       }
       alert(isLogin ? "Login successful" : "Signup successful");
+      navigate("/");
     } catch (err) {
       console.log(err);
       setError("An error occurred. Please try again.");
@@ -47,7 +55,7 @@ const AuthPage = () => {
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-xl font-bold mb-4">{isLogin ? "Login" : "Signup"}</h2>
       {error && <p className="text-red-500">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form className="space-y-4">
         {!isLogin && (
           <>
             <Input
@@ -161,7 +169,7 @@ const AuthPage = () => {
           className="input"
         />
         <Button
-          type="submit"
+          onClick={handleSubmit}
           className="bg-blue-500 text-white py-2 px-4 rounded"
         >
           {isLogin ? "Login" : "Signup"}

@@ -1,6 +1,20 @@
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../../lib/store/slices/authSlice";
+import { userLogout } from "../../lib/api";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); // Get auth status from Redux
+
+  const handleLogout = async () => {
+    await userLogout();
+    dispatch(logout());
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/auth");
+  };
   return (
     <nav className="bg-white shadow-md p-4">
       <div className="container mx-auto flex justify-between items-center">
@@ -12,6 +26,20 @@ const Navbar = () => {
           <Link to={"/wishlist"}>Wishlist</Link>
           <Link to={"/profile"}>Profile</Link>
         </ul>
+        <div>
+          {isAuthenticated ? (
+            <button
+              onClick={handleLogout}
+              className="text-gray-600 hover:text-gray-800"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link to="/auth" className="text-gray-600 hover:text-gray-800">
+              Login
+            </Link>
+          )}
+        </div>
       </div>
     </nav>
   );

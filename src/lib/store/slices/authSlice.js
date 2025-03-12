@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import Cookies from "js-cookie";
 const initialState = {
   isAuthenticated: !!localStorage.getItem("token"), // Check if token exists
   user: JSON.parse(localStorage.getItem("user")) || null, // Store user info
@@ -18,6 +18,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.isAuthenticated = false;
       state.user = null;
+      Cookies.remove("token");
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     },
