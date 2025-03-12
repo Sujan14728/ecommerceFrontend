@@ -130,4 +130,183 @@ export const deleteProduct = async (id) => {
   }
 };
 
+//Categories API
+export const getCategories = async () => {
+  try {
+    const response = await api.get("/categories");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
+export const getCategoryById = async (categoryId) => {
+  try {
+    const response = await api.get(`/categories/${categoryId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching category with ID ${categoryId}:`, error);
+    throw error;
+  }
+};
+
+export const createCategory = async (categoryData) => {
+  try {
+    const response = await api.post("/categories", categoryData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating category:", error);
+    throw error;
+  }
+};
+
+export const updateCategory = async (categoryId, updatedData) => {
+  try {
+    const response = await api.put(`/categories/${categoryId}`, updatedData);
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating category with ID ${categoryId}:`, error);
+    throw error;
+  }
+};
+
+export const deleteCategory = async (categoryId) => {
+  try {
+    const response = await api.delete(`/categories/${categoryId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting category with ID ${categoryId}:`, error);
+    throw error;
+  }
+};
+
+//Cart apis
+export const getCartItems = async (userId) => {
+  try {
+    const response = await api.get(`/carts/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching cart:", error);
+    throw error;
+  }
+};
+
+export const addToCart = async (userId, productId, quantity = 1) => {
+  try {
+    const response = await api.post("/carts", { userId, productId, quantity });
+    return response.data;
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+    throw error;
+  }
+};
+
+export const removeFromCart = async (productId) => {
+  try {
+    await api.delete(`/carts/${productId}`);
+  } catch (error) {
+    console.error("Error removing product from cart:", error);
+    throw error;
+  }
+};
+
+export const clearCart = async () => {
+  try {
+    await api.delete("/carts");
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    throw error;
+  }
+};
+
+//Wishlist apis
+export const addToWishlist = async (userId, productId) => {
+  try {
+    const response = await api.post("/wishlist", { userId, productId });
+    return response.data;
+  } catch (error) {
+    console.error("Error adding to wishlist:", error);
+    throw error;
+  }
+};
+
+export const removeFromWishlist = async (userId, productId) => {
+  try {
+    const response = await api.post("/wishlist/remove", { userId, productId });
+    return response.data;
+  } catch (error) {
+    console.error("Error removing from wishlist:", error);
+    throw error;
+  }
+};
+
+export const getWishlistItems = async (userId) => {
+  try {
+    const response = await api.get(`/wishlist/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching wishlist items:", error);
+    throw error;
+  }
+};
+
+//Reviews api
+export const getReviewsForProduct = async (productId) => {
+  try {
+    const response = await api.get(`/reviews/product/${productId}/reviews`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching reviews for product:", error);
+    throw error;
+  }
+};
+
+export const addReview = async (productId, reviewData) => {
+  try {
+    const response = await api.post(
+      `/reviews/product/${productId}/reviews`,
+      reviewData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error adding review:", error);
+    throw error;
+  }
+};
+
+export const updateReview = async (reviewId, updatedReviewData) => {
+  try {
+    const response = await api.put(
+      `/reviews/review/${reviewId}`,
+      updatedReviewData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating review:", error);
+    throw error;
+  }
+};
+
+export const getUserReviews = async (userId) => {
+  try {
+    const response = await api.get(`/reviews/user/${userId}/reviews`);
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user reviews:", error);
+    throw error;
+  }
+};
+
+export const deleteReview = async (reviewId) => {
+  try {
+    const response = await api.delete(`/reviews/review/${reviewId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    throw error;
+  }
+};
+
 export default api;

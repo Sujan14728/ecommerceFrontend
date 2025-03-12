@@ -1,33 +1,43 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import api from "../lib/api";
+import { getCategories, getProducts } from "../lib/api";
+import { useSelector } from "react-redux";
+import ProductCard from "../components/Seller/Product/ProductCard";
 
 export default function Shop() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-
+  const user = useSelector((state) => state.auth.user);
+  const [flag, setFlag] = useState(0);
   useEffect(() => {
-    api.get("/products").then((res) => {
-      setProducts(res.data);
-      setFilteredProducts(res.data);
-    });
+    const fetchData = async () => {
+      try {
+        const productResponse = await getProducts();
+        setProducts(productResponse.data);
+        setFilteredProducts(productResponse.data);
 
-    api.get("/categories").then((res) => setCategories(res.data));
-  }, []);
+        const categoryResponse = await getCategories();
+        setCategories(categoryResponse.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [user?._id, flag]);
 
   const filterByCategory = (categoryId) => {
     setSelectedCategory(categoryId);
     setFilteredProducts(
       categoryId
-        ? products.filter((p) => p.categoryId === categoryId)
+        ? products.filter((p) => p.categoryId?._id === categoryId)
         : products
     );
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="w-[80%] mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Shop</h1>
       <div className="mb-4">
         <select
@@ -43,51 +53,16 @@ export default function Shop() {
           ))}
         </select>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredProducts.map((product) => (
-          <a
-            key={product._id}
-            href={`/product/${product._id}`}
-            className="border p-4 rounded-lg shadow-lg hover:shadow-xl"
-          >
-            <img
-              src={product.imgUrl}
-              alt={product.name}
-              className="w-full h-40 object-cover rounded"
-            />
-            <h3 className="font-semibold mt-2">{product.name}</h3>
-            <p className="text-gray-600">{product.brand}</p>
-            <span className="font-bold text-blue-600">${product.price}</span>
-          </a>
+          <ProductCard
+            products={products}
+            product={product}
+            flag={flag}
+            setFlag={setFlag}
+          />
         ))}
       </div>
-    </div>
-  );
-}
-
-export function ProductPage() {
-  const { id } = useParams();
-  const [product, setProduct] = useState(null);
-
-  useEffect(() => {
-    api.get(`/products/${id}`).then((res) => setProduct(res.data));
-  }, [id]);
-
-  if (!product) return <p>Loading...</p>;
-
-  return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
-      <img
-        src={product.imgUrl}
-        alt={product.name}
-        className="w-96 h-96 object-cover rounded"
-      />
-      <p className="text-gray-700 mt-2">{product.description}</p>
-      <p className="font-bold text-xl text-blue-600">${product.price}</p>
-      <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-        Add to Cart
-      </button>
     </div>
   );
 }

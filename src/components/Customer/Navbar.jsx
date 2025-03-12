@@ -6,8 +6,8 @@ import { userLogout } from "../../lib/api";
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); // Get auth status from Redux
-
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.auth.user);
   const handleLogout = async () => {
     await userLogout();
     dispatch(logout());
@@ -26,18 +26,23 @@ const Navbar = () => {
           <Link to={"/wishlist"}>Wishlist</Link>
           <Link to={"/profile"}>Profile</Link>
         </ul>
-        <div>
-          {isAuthenticated ? (
-            <button
-              onClick={handleLogout}
-              className="text-gray-600 hover:text-gray-800"
-            >
-              Logout
-            </button>
-          ) : (
-            <Link to="/auth" className="text-gray-600 hover:text-gray-800">
-              Login
-            </Link>
+        <div className="flex gap-4">
+          <div>
+            {isAuthenticated ? (
+              <button
+                onClick={handleLogout}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link to="/auth" className="text-gray-600 hover:text-gray-800">
+                Login
+              </Link>
+            )}
+          </div>
+          {isAuthenticated && user.userType === "seller" && (
+            <Link to={"/seller/dashboard"}>Dashboard</Link>
           )}
         </div>
       </div>
