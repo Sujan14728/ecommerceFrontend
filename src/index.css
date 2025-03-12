@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .form-wrap {
+    @apply flex md:flex-row flex-col gap-2;
+  }
+
+  .form-group {
+    @apply mb-4 flex md:flex-row flex-col;
+  }
+
+  .form-group label {
+    @apply w-40 flex items-center;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    @apply w-full  px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+}

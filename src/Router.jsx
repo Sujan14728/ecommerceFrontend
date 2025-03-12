@@ -10,8 +10,8 @@ import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import MyWishlist from "./pages/MyWishlist";
 import MyCart from "./pages/MyCart";
-import UserProfile from "./pages/UserProfile";
 import AuthPage from "./components/AuthPage";
+import UserProfile from "./pages/UserProfile";
 
 const Router = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); // Get auth state from Redux
@@ -31,27 +31,33 @@ const Router = () => {
         },
         {
           path: "/wishlist",
-          element: (
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <MyWishlist />
-            </ProtectedRoute>
-          ),
+          element: <ProtectedRoute />,
+          children: [
+            {
+              path: "",
+              element: <MyWishlist />,
+            },
+          ],
         },
         {
           path: "/cart",
-          element: (
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <MyCart />
-            </ProtectedRoute>
-          ),
+          element: <ProtectedRoute />,
+          children: [
+            {
+              path: "",
+              element: <MyCart />,
+            },
+          ],
         },
         {
           path: "/profile",
-          element: (
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <UserProfile />
-            </ProtectedRoute>
-          ),
+          element: <ProtectedRoute />,
+          children: [
+            {
+              path: "",
+              element: <UserProfile />,
+            },
+          ],
         },
       ],
     },

@@ -5,10 +5,14 @@ import Footer from "../components/Customer/Footer";
 
 const CustormerLayout = () => {
   return (
-    <div>
-      <Navbar />
-      <Outlet />
-      <Footer />
+    <div className=" ">
+      <div className="min-h-screen">
+        <Navbar />
+        <Outlet />
+      </div>
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 };

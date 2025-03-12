@@ -39,6 +39,47 @@ export const userLogout = async () => {
   }
 };
 
+//Users api
+export const getAllUsers = async () => {
+  try {
+    const response = await api.get("/users");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    throw error;
+  }
+};
+
+export const getUserById = async (userId) => {
+  try {
+    const response = await api.get(`/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching user with ID ${userId}:`, error);
+    throw error;
+  }
+};
+
+export const updateUser = async (userId, updatedData) => {
+  try {
+    const response = await api.put(`/users/${userId}`, updatedData);
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating user with ID ${userId}:`, error);
+    throw error;
+  }
+};
+
+export const deleteUser = async (userId) => {
+  try {
+    const response = await api.delete(`/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting user with ID ${userId}:`, error);
+    throw error;
+  }
+};
+
 //Product api
 export const getProducts = async () => {
   try {
