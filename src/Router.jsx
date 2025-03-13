@@ -16,6 +16,15 @@ import SellerDashboard from "./pages/seller/SellerDashboard";
 import SellerLayout from "./layouts/SellerLayout";
 import SellerProducts from "./pages/seller/SellerProducts";
 import { ProductPage } from "./pages/product/ProductPage";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminLayout from "./layouts/AdminLayout";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminAdvert from "./pages/admin/AdminAdvert";
+import AdminOrder from "./pages/admin/AdminOrder";
+import AdminReviews from "./pages/admin/AdminReviews";
+import SellerProfile from "./pages/seller/SellerProfile";
+import AdminProfile from "./pages/admin/AdminProfile";
+import AdminProduct from "./pages/admin/AdminProduct";
 
 const Router = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); // Get auth state from Redux
@@ -79,6 +88,44 @@ const Router = () => {
         {
           path: "/seller/products",
           element: <SellerProducts />,
+        },
+        {
+          path: "/seller/profile",
+          element: <SellerProfile />,
+        },
+      ],
+    },
+    {
+      path: "/admin",
+      element: <AdminLayout />,
+      children: [
+        {
+          element: <AdminDashboard />,
+          index: true,
+        },
+        {
+          path: "/admin/users",
+          element: <AdminUsers />,
+        },
+        {
+          path: "/admin/adverts",
+          element: <AdminAdvert />,
+        },
+        {
+          path: "/admin/products",
+          element: <AdminProduct />,
+        },
+        {
+          path: "/admin/orders",
+          element: <AdminOrder />,
+        },
+        {
+          path: "/admin/reviews",
+          element: <AdminReviews />,
+        },
+        {
+          path: "/admin/profile",
+          element: <AdminProfile />,
         },
       ],
     },

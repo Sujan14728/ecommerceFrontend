@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { userLogin, userSignup } from "../lib/api";
-import { Button, Input, Select } from "antd";
+import { Button, Input, Select} from "antd";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../lib/store/slices/authSlice";
@@ -141,12 +141,15 @@ const AuthPage = () => {
             <Select
               name="userType"
               value={formData.userType}
-              onChange={handleChange}
+              onChange={(value) =>
+                handleChange({ target: { name: "userType", value } })
+              }
               required
               className="input"
             >
-              <option value="customer">Customer</option>
-              <option value="seller">Seller</option>
+              <Select.Option value="customer">Customer</Select.Option>
+              <Select.Option value="seller">Seller</Select.Option>
+              <Select.Option value="admin">Admin</Select.Option>
             </Select>
           </>
         )}

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { FaTrashAlt } from "react-icons/fa";
-import { getCartItems, removeFromCart } from "../lib/api";
+import { getCartItems } from "../lib/api";
 import { useSelector } from "react-redux";
-import { Modal } from "antd";
+import CartItem from "../components/Customer/Cart/CartItem";
 
 const MyCart = () => {
   const user = useSelector((state) => state.auth.user);
@@ -13,7 +12,9 @@ const MyCart = () => {
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
+        console.log("Fetching cart items...");
         const response = await getCartItems(user._id);
+        console.log("Fetched data:", response.data);
         setCartItems(response.data);
         calculateTotal(response.data);
       } catch (error) {
@@ -22,7 +23,7 @@ const MyCart = () => {
     };
 
     fetchCartItems();
-  }, [flag]);
+  }, [flag, user._id]);
 
   // Calculate total price
   const calculateTotal = (items) => {
@@ -32,25 +33,9 @@ const MyCart = () => {
     setTotalPrice(total);
   };
 
-  // Remove item from cart
-  const handleRemoveFromCart = async (productId) => {
-    Modal.confirm({
-      title: "Are you sure?",
-      content: "Do you really want to remove this item from the cart?",
-      okText: "Yes, Remove",
-      cancelText: "Cancel",
-      onOk: async () => {
-        try {
-          await removeFromCart(productId);
-          setFlag(flag + 1);
-        } catch (error) {
-          console.error("Error removing product from cart:", error);
-        }
-      },
-    });
-  };
-
-  console.log(cartItems);
+  useEffect(() => {
+    console.log(flag);
+  }, [flag]);
 
   return (
     <div className="w-[80%] mx-auto p-4 flex md:flex-row flex-col md:justify-between gap-5 ">
@@ -61,38 +46,7 @@ const MyCart = () => {
         ) : (
           <div>
             {cartItems.map((item) => (
-              <div
-                key={item._id}
-                className="flex justify-between items-center p-4 border-b"
-              >
-                <div className="flex items-center gap-4">
-                  <img
-                    src={item.productId.imgUrl}
-                    alt={item.productId.name}
-                    className="w-16 h-16 object-contain"
-                  />
-                  <div>
-                    <h3 className="font-semibold">{item.productId.name}</h3>
-                    <span>${item.productId.price}</span>
-                    <div className="flex items-center gap-4 mt-2">
-                      <button
-                        className="bg-gray-300 px-2 py-1 rounded-lg"
-                        disabled
-                      >
-                        Quantity: {item.quantity}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => handleRemoveFromCart(item._id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg"
-                  >
-                    <FaTrashAlt />
-                  </button>
-                </div>
-              </div>
+              <CartItem item={item} flag={flag} setFlag={setFlag} />
             ))}
           </div>
         )}

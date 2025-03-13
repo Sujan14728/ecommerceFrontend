@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import {
   addReview,
+  addToCart,
   deleteReview,
+  getActiveAdByProductId,
   getProductById,
   getReviewsForProduct,
   getUserReviews,
@@ -11,6 +13,8 @@ import { CiStar } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import { formatDate } from "../../utils/formatDate";
 import { AiOutlineDelete } from "react-icons/ai";
+import { message } from "antd";
+import Loading from "../../utils/Loading";
 
 export function ProductPage() {
   const { id } = useParams();
@@ -24,7 +28,8 @@ export function ProductPage() {
   const [userReview, setUserReview] = useState(null);
 
   const [flag, setFlag] = useState(0);
-
+  const [advertisedPrice, setAdvertisedPrice] = useState(null);
+  const [isAdvertised, setIsAdvertised] = useState(false);
   useEffect(() => {
     const fetchUserReview = async () => {
       const response = await getUserReviews(user._id);
@@ -38,6 +43,13 @@ export function ProductPage() {
     const fetchProduct = async () => {
       const response = await getProductById(id);
       setProduct(response.data);
+
+      // Check for active advertisements
+      const adResponse = await getActiveAdByProductId(id);
+      if (adResponse.data) {
+        setAdvertisedPrice(adResponse.data.price);
+        setIsAdvertised(true);
+      }
     };
 
     fetchProduct();
@@ -96,7 +108,24 @@ export function ProductPage() {
       alert("Failed to delete review. Please try again.");
     }
   };
-  if (!product) return <p>Loading...</p>;
+
+  const handleAddToCart = async (productId) => {
+    try {
+      await addToCart(user._id, productId);
+
+      message.success("Product added to cart successfully!");
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+      message.error("Failed to add product to cart");
+    }
+  };
+
+  if (!product)
+    return (
+      <div className="w-full flex justify-center">
+        <Loading />
+      </div>
+    );
 
   return (
     <div className="w-full pt-8 flex justify-center p-4">
@@ -117,8 +146,27 @@ export function ProductPage() {
             </span>
             <hr className="border-[1px] w-full mt-2" />
             <p className="text-gray-700 mt-2">{product.description}</p>
-            <p className="font-bold text-xl text-blue-600">${product.price}</p>
-            <button className="flex gap-2 items-center mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            <div className="text-center">
+              {isAdvertised ? (
+                <div>
+                  <p className="text-gray-500 line-through">${product.price}</p>
+                  <p className="font-bold text-xl text-green-600">
+                    ${advertisedPrice}
+                    <span className="ml-2 text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
+                      Special Offer!
+                    </span>
+                  </p>
+                </div>
+              ) : (
+                <p className="font-bold text-xl text-blue-600">
+                  ${product.price}
+                </p>
+              )}
+            </div>
+            <button
+              onClick={() => handleAddToCart(product._id)}
+              className="flex gap-2 items-center mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            >
               Add to Cart
             </button>
           </div>

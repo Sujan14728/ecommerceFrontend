@@ -8,8 +8,10 @@ export default function Shop() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchText, setSearchText] = useState("");
   const user = useSelector((state) => state.auth.user);
   const [flag, setFlag] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -29,33 +31,66 @@ export default function Shop() {
 
   const filterByCategory = (categoryId) => {
     setSelectedCategory(categoryId);
-    setFilteredProducts(
-      categoryId
-        ? products.filter((p) => p.categoryId?._id === categoryId)
-        : products
-    );
+    filterProducts(categoryId, searchText);
+  };
+
+  const filterBySearch = (searchQuery) => {
+    setSearchText(searchQuery);
+    filterProducts(selectedCategory, searchQuery);
+  };
+
+  const filterProducts = (categoryId, searchQuery) => {
+    let filtered = products;
+
+    if (categoryId) {
+      filtered = filtered.filter((p) => p.categoryId?._id === categoryId);
+    }
+
+    if (searchQuery) {
+      filtered = filtered.filter(
+        (p) =>
+          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    setFilteredProducts(filtered);
   };
 
   return (
     <div className="w-[80%] mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Shop</h1>
-      <div className="mb-4">
-        <select
-          value={selectedCategory}
-          onChange={(e) => filterByCategory(e.target.value)}
-          className="border p-2 rounded-lg"
-        >
-          <option value="">All Categories</option>
-          {categories.map((cat) => (
-            <option key={cat._id} value={cat._id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
+      <div className="flex gap-4 w-full justify-center">
+        <div className="mb-4 lg:w-[60%] w-full">
+          <input
+            type="text"
+            value={searchText}
+            onChange={(e) => filterBySearch(e.target.value)}
+            placeholder="Search products..."
+            className="border p-2 rounded-lg w-full"
+          />
+        </div>
+
+        <div className="mb-4 w-fit">
+          <select
+            value={selectedCategory}
+            onChange={(e) => filterByCategory(e.target.value)}
+            className="border p-2 rounded-lg"
+          >
+            <option value="">All Categories</option>
+            {categories.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
-      <div className="grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredProducts.map((product) => (
           <ProductCard
+            key={product._id}
             products={products}
             product={product}
             flag={flag}

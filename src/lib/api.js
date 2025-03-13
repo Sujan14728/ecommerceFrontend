@@ -70,6 +70,23 @@ export const updateUser = async (userId, updatedData) => {
   }
 };
 
+export const changeUserPassword = async (
+  userId,
+  currentPassword,
+  newPassword
+) => {
+  try {
+    const response = await api.put(`/users/password/${userId}`, {
+      currentPassword,
+      newPassword,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating user with ID ${userId}:`, error);
+    throw error;
+  }
+};
+
 export const deleteUser = async (userId) => {
   try {
     const response = await api.delete(`/users/${userId}`);
@@ -202,6 +219,16 @@ export const addToCart = async (userId, productId, quantity = 1) => {
   }
 };
 
+export const updateCartItem = async (cartId, quantity = 1) => {
+  try {
+    const response = await api.put(`/carts/${cartId}`, { quantity });
+    return response.data;
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+    throw error;
+  }
+};
+
 export const removeFromCart = async (productId) => {
   try {
     await api.delete(`/carts/${productId}`);
@@ -252,6 +279,16 @@ export const getWishlistItems = async (userId) => {
 };
 
 //Reviews api
+export const getAllReviews = async () => {
+  try {
+    const response = await api.get(`/reviews`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching reviews for product:", error);
+    throw error;
+  }
+};
+
 export const getReviewsForProduct = async (productId) => {
   try {
     const response = await api.get(`/reviews/product/${productId}/reviews`);
@@ -305,6 +342,111 @@ export const deleteReview = async (reviewId) => {
     return response.data;
   } catch (error) {
     console.error("Error deleting review:", error);
+    throw error;
+  }
+};
+
+//Ads apis
+export const getAds = async () => {
+  try {
+    const response = await api.get("/ads");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ads:", error);
+    throw error;
+  }
+};
+
+export const getPublicActiveAds = async () => {
+  try {
+    const response = await api.get("/ads/public/active");
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ads:", error);
+    throw error;
+  }
+};
+
+export const getPastAds = async () => {
+  try {
+    const response = await api.get("/ads/past");
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ads:", error);
+    throw error;
+  }
+};
+
+export const getActiveAdByProductId = async (productId) => {
+  try {
+    const response = await api.get(`/ads/active/product/${productId}`);
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ads:", error);
+    throw error;
+  }
+};
+
+export const getAdById = async (adId) => {
+  try {
+    const response = await api.get(`/ads/${adId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ad:", error);
+    throw error;
+  }
+};
+
+export const createAd = async (adData) => {
+  console.log(adData);
+  try {
+    const response = await api.post("/ads", adData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating ad:", error);
+    throw error;
+  }
+};
+
+export const updateAd = async (adId, adData) => {
+  try {
+    const response = await api.put(`/ads/${adId}`, adData);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating ad:", error);
+    throw error;
+  }
+};
+
+export const deleteAd = async (adId) => {
+  try {
+    const response = await api.delete(`/ads/${adId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting ad:", error);
+    throw error;
+  }
+};
+
+export const getAdsByUser = async (userId) => {
+  try {
+    const response = await api.get(`/ads/user/${userId}/ads`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user ads:", error);
+    throw error;
+  }
+};
+
+export const getActiveAds = async () => {
+  try {
+    const response = await api.get("/ads/active");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching active ads:", error);
     throw error;
   }
 };

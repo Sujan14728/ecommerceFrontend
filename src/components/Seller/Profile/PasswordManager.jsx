@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, message, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import { changeUserPassword } from "../../../lib/api";
 
-const PasswordManager = () => {
+const PasswordManager = ({ isModalVisible, handleCancel }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const [form] = Form.useForm();
+
   const onFinish = async (values) => {
     const { currentPassword, newPassword } = values;
     setLoading(true);
@@ -24,7 +24,8 @@ const PasswordManager = () => {
       if (response.status === "success") {
         message.success("Password changed successfully!");
         form.resetFields();
-        navigate("/profile");
+        handleCancel(); // Close the modal after success
+        navigate("/seller/profile");
       }
     } catch (error) {
       message.error(error.response.data.message);
@@ -34,9 +35,15 @@ const PasswordManager = () => {
   };
 
   return (
-    <div className="min-h-[20rem] flex justify-center items-center">
-      <div style={{ width: 400 }}>
-        <h2 className="text-[20px] font-[500] mb-4 ">Change Password</h2>
+    <div>
+      {/* Modal containing the form */}
+      <Modal
+        title="Change Password"
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        footer={null} // No footer buttons, as the form has its own submit button
+        destroyOnClose // This ensures the form is reset when the modal is closed
+      >
         <Form form={form} onFinish={onFinish} layout="vertical">
           <Form.Item
             label="Current Password"
@@ -88,7 +95,7 @@ const PasswordManager = () => {
             </Button>
           </Form.Item>
         </Form>
-      </div>
+      </Modal>
     </div>
   );
 };

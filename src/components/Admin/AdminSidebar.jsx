@@ -1,9 +1,11 @@
 import React from "react";
 import { Menu } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { MdDashboard, MdProductionQuantityLimits } from "react-icons/md";
-import { LuPackage } from "react-icons/lu";
+import { MdDashboard } from "react-icons/md";
+import { LuPackage, LuUsersRound } from "react-icons/lu";
 import { FaRegStar } from "react-icons/fa";
+import { LiaAdversal } from "react-icons/lia";
+import { AiOutlineProduct } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 
 const items = [
@@ -11,34 +13,47 @@ const items = [
     key: "1",
     icon: <MdDashboard />,
     label: "Dashboard",
-    path: "/seller/dashboard",
+    path: "/admin",
   },
   {
     key: "2",
-    icon: <MdProductionQuantityLimits />,
-    label: "Products",
-    path: "/seller/products",
+    icon: <LuUsersRound />,
+    label: "All Users",
+    path: "/admin/users",
   },
   {
     key: "3",
+    icon: <LiaAdversal />,
+    label: "Ads Management",
+    path: "/admin/adverts",
+  },
+  {
+    key: "4",
+    icon: <AiOutlineProduct />,
+    label: "Product Management",
+    path: "/admin/products",
+  },
+  {
+    key: "5",
+    icon: <FaRegStar />,
+    label: "Reviews",
+    path: "/admin/reviews",
+  },
+  {
+    key: "6",
+    icon: <LuPackage />,
+    label: "Orders",
+    path: "/admin/orders",
+  },
+
+  {
+    key: "7",
     icon: <CgProfile />,
     label: "Profile",
-    path: "/seller/profile",
+    path: "/admin/profile",
   },
-  // {
-  //   key: "4",
-  //   icon: <LuPackage />,
-  //   label: "Orders",
-  //   path: "/seller/orders",
-  // },
-  // {
-  //   key: "5",
-  //   icon: <FaRegStar />,
-  //   label: "Reviews",
-  //   path: "/seller/reviews",
-  // },
 ];
-const Sidebar = () => {
+const AdminSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const selectedKey = items.find(
@@ -51,7 +66,7 @@ const Sidebar = () => {
     }
   };
   return (
-    <div>
+    <div className="min-h-screen ">
       <div className="w-full flex justify-center text-[28px] font-[600] py-8 ">
         <h2>eShop</h2>
       </div>
@@ -68,4 +83,4 @@ const Sidebar = () => {
     </div>
   );
 };
-export default Sidebar;
+export default AdminSidebar;
