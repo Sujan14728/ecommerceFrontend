@@ -118,6 +118,17 @@ export const getProductById = async (id) => {
   }
 };
 
+export const getProductByUserId = async (userId) => {
+  console.log(userId);
+  try {
+    const response = await api.get(`/products/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw error;
+  }
+};
+
 export const createProduct = async (productData) => {
   try {
     const response = await api.post("/products", productData);
@@ -400,10 +411,9 @@ export const getAdById = async (adId) => {
   }
 };
 
-export const createAd = async (adData) => {
-  console.log(adData);
+export const createAd = async (sellerId, adData) => {
   try {
-    const response = await api.post("/ads", adData);
+    const response = await api.post(`/ads/${sellerId}`, adData);
     return response.data;
   } catch (error) {
     console.error("Error creating ad:", error);
@@ -412,11 +422,22 @@ export const createAd = async (adData) => {
 };
 
 export const updateAd = async (adId, adData) => {
+  console.log(adData);
   try {
     const response = await api.put(`/ads/${adId}`, adData);
     return response.data;
   } catch (error) {
     console.error("Error updating ad:", error);
+    throw error;
+  }
+};
+
+export const updateAdStatus = async (adId, status) => {
+  try {
+    const response = await api.put(`/ads/status/${adId}`, { status });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating ad's status:", error);
     throw error;
   }
 };

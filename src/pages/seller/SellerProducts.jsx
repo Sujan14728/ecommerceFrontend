@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, Table } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import CreateProduct from "../../components/Seller/Product/CreateProduct";
-import { getProducts } from "../../lib/api";
+import { getProductByUserId } from "../../lib/api";
+import { useSelector } from "react-redux";
 
 const SellerProducts = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [flag, setFlag] = useState(0);
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
+  const user = useSelector((state) => state.auth.user);
   const showModal = (product = null) => {
     setEditingProduct(product);
     setIsModalVisible(true);
@@ -30,7 +32,7 @@ const SellerProducts = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const response = await getProducts();
+      const response = await getProductByUserId(user._id);
       console.log(response);
       setProducts(response.data);
     };
@@ -45,7 +47,7 @@ const SellerProducts = () => {
     },
     {
       title: "Price",
-      render: (text, record) => "Rs." + record.price || "N/A",
+      render: (text, record) => "$" + record.price || "N/A",
       key: "price",
     },
     {

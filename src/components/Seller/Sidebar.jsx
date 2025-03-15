@@ -21,18 +21,24 @@ const items = [
   },
   {
     key: "3",
+    icon: <LuPackage />,
+    label: "Advertisement",
+    path: "/seller/advert",
+  },
+  {
+    key: "4",
     icon: <CgProfile />,
     label: "Profile",
     path: "/seller/profile",
   },
   // {
-  //   key: "4",
+  //   key: "5",
   //   icon: <LuPackage />,
   //   label: "Orders",
   //   path: "/seller/orders",
   // },
   // {
-  //   key: "5",
+  //   key: "6",
   //   icon: <FaRegStar />,
   //   label: "Reviews",
   //   path: "/seller/reviews",

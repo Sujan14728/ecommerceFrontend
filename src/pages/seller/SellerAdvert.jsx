@@ -22,20 +22,20 @@ import {
   createAd,
   deleteAd,
   getAds,
-  getProducts,
+  getAdsByUser,
+  getProductByUserId,
   updateAd,
-  updateAdStatus,
 } from "../../lib/api";
 import AdvertFormModal from "../../components/Admin/AdvertFormModal";
 import { formatDate } from "../../utils/formatDate";
 import AdPreviewModal from "../../components/Admin/AdPreviewModal";
 import PastAdsTable from "../../components/Admin/PastAdsTable";
-import { RxCheck, RxCross2 } from "react-icons/rx";
+import { useSelector } from "react-redux";
 const { Column } = Table;
 
 const { confirm } = Modal;
 
-const AdminAdvert = () => {
+const SellerAdvert = () => {
   const [ads, setAds] = useState([]);
   const [filteredAds, setFilteredAds] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -45,6 +45,7 @@ const AdminAdvert = () => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     fetchAds();
@@ -52,7 +53,7 @@ const AdminAdvert = () => {
 
   const fetchAds = async () => {
     try {
-      const response = await getAds();
+      const response = await getAdsByUser(user._id);
       setAds(response.data);
       setFilteredAds(response.data);
       setLoading(false);
@@ -114,15 +115,15 @@ const AdminAdvert = () => {
         status: values.status,
         image: values.image,
         url: values.url,
-        startDate: values.dates[0].format("YYYY-MM-DD"),
-        endDate: values.dates[1].format("YYYY-MM-DD"),
+        startDate: values.dates[0].toISOString() || null,
+        endDate: values.dates[1].toISOString() || null,
       };
 
       if (selectedAd) {
         await updateAd(selectedAd._id, formattedValues);
         message.success("Ad updated successfully");
       } else {
-        await createAd(formattedValues);
+        await createAd(user._id, formattedValues);
         message.success("Ad created successfully");
       }
       delete formattedValues.dates;
@@ -137,35 +138,11 @@ const AdminAdvert = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const response = await getProducts();
+      const response = await getProductByUserId(user._id);
       setProducts(response.data);
     };
     fetchProducts();
   }, []);
-
-  const handleStatusAction = async (values) => {
-    console.log(values);
-    confirm({
-      title: "Are you sure you want to change the status of this ad?",
-      content: "This action cannot be undone",
-      okText: "Yes",
-      okType: "primary",
-      cancelText: "No",
-      async onOk() {
-        try {
-          await updateAdStatus(
-            values._id,
-            values.status === "active" ? "inactive" : "active"
-          );
-          message.success("Ad updated successfully");
-          fetchAds();
-        } catch (error) {
-          console.log(error);
-          message.error("Failed to update ad");
-        }
-      },
-    });
-  };
 
   return (
     <div className="w-full">
@@ -247,23 +224,14 @@ const AdminAdvert = () => {
                   }}
                 />
 
-                {record.status === "active" ? (
-                  <Button
-                    type="link"
-                    icon={<RxCross2 fontSize={20} />}
-                    onClick={() => {
-                      handleStatusAction(record);
-                    }}
-                  />
-                ) : (
-                  <Button
-                    type="link"
-                    icon={<RxCheck fontSize={20} />}
-                    onClick={() => {
-                      handleStatusAction(record);
-                    }}
-                  />
-                )}
+                <Button
+                  type="link"
+                  icon={<EditOutlined />}
+                  onClick={() => {
+                    setSelectedAd(record);
+                    setIsModalVisible(true);
+                  }}
+                />
 
                 <Button
                   type="link"
@@ -276,7 +244,7 @@ const AdminAdvert = () => {
           />
         </Table>
 
-        {/* <AdvertFormModal
+        <AdvertFormModal
           visible={isModalVisible}
           onCancel={() => {
             setIsModalVisible(false);
@@ -285,7 +253,7 @@ const AdminAdvert = () => {
           onSubmit={handleFormSubmit}
           initialValues={selectedAd}
           products={products}
-        /> */}
+        />
 
         <AdPreviewModal
           visible={previewVisible}
@@ -298,4 +266,4 @@ const AdminAdvert = () => {
   );
 };
 
-export default AdminAdvert;
+export default SellerAdvert;

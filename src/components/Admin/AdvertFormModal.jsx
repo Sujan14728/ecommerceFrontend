@@ -1,6 +1,8 @@
 import { Modal, Form, Input, Select, DatePicker } from "antd";
+import dayjs from "dayjs";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
@@ -9,10 +11,13 @@ const AdvertFormModal = ({
   onCancel,
   onSubmit,
   initialValues,
-  products, // Pass products list as prop or fetch internally
+  products,
 }) => {
   const [form] = Form.useForm();
   const [currentPrice, setCurrentPrice] = useState(null);
+  const user = useSelector((state) => state.auth.user);
+
+  console.log(initialValues);
 
   // Set initial values when modal opens
   useEffect(() => {
@@ -36,13 +41,12 @@ const AdvertFormModal = ({
     const [startDate, endDate] = values.dates;
     onSubmit({
       ...values,
-      startDate: startDate.format("YYYY-MM-DD"),
-      endDate: endDate.format("YYYY-MM-DD"),
+      startDate: startDate ? moment(startDate).toISOString() : null,
+      endDate: endDate ? moment(endDate).toISOString() : null,
       productId: values.productId,
       price: Number(values.price),
     });
   };
-  console.log(initialValues);
 
   return (
     <Modal
@@ -60,12 +64,10 @@ const AdvertFormModal = ({
           ...initialValues,
           dates:
             initialValues?.startDate && initialValues?.endDate
-              ? [
-                  moment(initialValues.startDate, "YYYY-MM-DD"),
-                  moment(initialValues.endDate, "YYYY-MM-DD"),
-                ]
+              ? [moment(initialValues.startDate), moment(initialValues.endDate)]
               : null,
-          status: initialValues?.status,
+
+          productId: initialValues?.productId._id,
         }}
         onFinish={handleSubmit}
       >
@@ -155,7 +157,6 @@ const AdvertFormModal = ({
         >
           <TextArea rows={4} placeholder="Enter ad content" />
         </Form.Item>
-
         <Form.Item
           label="Dates"
           name="dates"
@@ -163,19 +164,20 @@ const AdvertFormModal = ({
         >
           <RangePicker className="w-full" />
         </Form.Item>
-
-        <Form.Item
-          label="Status"
-          name="status"
-          rules={[{ required: true, message: "Please select status!" }]}
-        >
-          <Select
-            options={[
-              { value: "active", label: "Active" },
-              { value: "inactive", label: "Inactive" },
-            ]}
-          />
-        </Form.Item>
+        {/* {user.userType === "admin" && (
+          <Form.Item
+            label="Status"
+            name="status"
+            rules={[{ required: true, message: "Please select status!" }]}
+          >
+            <Select
+              options={[
+                { value: "active", label: "Active" },
+                { value: "inactive", label: "Inactive" },
+              ]}
+            />
+          </Form.Item>
+        )} */}
       </Form>
     </Modal>
   );
