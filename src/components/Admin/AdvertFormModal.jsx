@@ -41,8 +41,8 @@ const AdvertFormModal = ({
     const [startDate, endDate] = values.dates;
     onSubmit({
       ...values,
-      startDate: startDate ? moment(startDate).toISOString() : null,
-      endDate: endDate ? moment(endDate).toISOString() : null,
+      startDate: startDate ? startDate.toISOString() : null,
+      endDate: endDate ? endDate.toISOString() : null,
       productId: values.productId,
       price: Number(values.price),
     });
@@ -64,7 +64,7 @@ const AdvertFormModal = ({
           ...initialValues,
           dates:
             initialValues?.startDate && initialValues?.endDate
-              ? [moment(initialValues.startDate), moment(initialValues.endDate)]
+              ? [dayjs(initialValues.startDate), dayjs(initialValues.endDate)]
               : null,
 
           productId: initialValues?.productId._id,
