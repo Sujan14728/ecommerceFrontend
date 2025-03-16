@@ -118,6 +118,16 @@ export const getProductById = async (id) => {
   }
 };
 
+export const getProductByCategoryId = async (categoryId) => {
+  try {
+    const response = await api.get(`/products/category/${categoryId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw error;
+  }
+};
+
 export const getProductByUserId = async (userId) => {
   console.log(userId);
   try {
@@ -464,7 +474,7 @@ export const getAdsByUser = async (userId) => {
 
 export const getActiveAds = async () => {
   try {
-    const response = await api.get("/ads/active");
+    const response = await api.get("/ads/public/active");
     return response.data;
   } catch (error) {
     console.error("Error fetching active ads:", error);

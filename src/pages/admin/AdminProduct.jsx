@@ -170,9 +170,9 @@ const AdminProduct = () => {
           onChange={(e) => setSearchText(e.target.value)}
           className="w-full md:w-64"
         />
-        <Button type="primary" icon={<PlusOutlined />} onClick={showAddModal}>
+        {/* <Button type="primary" icon={<PlusOutlined />} onClick={showAddModal}>
           Add Product
-        </Button>
+        </Button> */}
       </div>
 
       <Table

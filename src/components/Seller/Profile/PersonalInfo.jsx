@@ -1,4 +1,4 @@
-import { Input } from "antd";
+import { Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { getUserById, updateUser } from "../../../lib/api";
 import { useSelector } from "react-redux";
@@ -13,6 +13,7 @@ const PersonalInfo = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(value);
     setUserInfo({
       ...userInfo,
       [name]: value,
@@ -175,13 +176,28 @@ const PersonalInfo = () => {
           <div className="form-wrap ">
             <div className="form-group">
               <label htmlFor="userType">User Type:</label>
-              <Input
+              {/* <Input
                 type="text"
                 id="userType"
                 name="userType"
                 value={userInfo.userType}
                 onChange={handleChange}
                 required
+              /> */}
+              <Select
+                className="w-full h-full"
+                onChange={(value) =>
+                  setUserInfo({
+                    ...userInfo,
+                    userType: value,
+                  })
+                }
+                value={userInfo.userType}
+                options={[
+                  { value: "customer", label: "Customer" },
+                  { value: "seller", label: "Seller" },
+                  { value: "admin", label: "Admin" },
+                ]}
               />
             </div>
             <div className="form-group">

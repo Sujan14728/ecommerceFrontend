@@ -134,7 +134,7 @@ export function ProductPage() {
           <h1 className="w-full text-left text-[28px] font-[600]">
             Product Details
           </h1>
-          <div className="w-80 flex flex-col items-center bg-slate-100 rounded-lg py-4">
+          <div className="w-80 px-5 flex flex-col items-center bg-slate-100 rounded-lg py-4">
             <img
               src={product.imgUrl}
               alt={product.name}

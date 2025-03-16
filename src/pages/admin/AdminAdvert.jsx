@@ -31,6 +31,7 @@ import { formatDate } from "../../utils/formatDate";
 import AdPreviewModal from "../../components/Admin/AdPreviewModal";
 import PastAdsTable from "../../components/Admin/PastAdsTable";
 import { RxCheck, RxCross2 } from "react-icons/rx";
+import dayjs from "dayjs";
 const { Column } = Table;
 
 const { confirm } = Modal;
@@ -53,8 +54,11 @@ const AdminAdvert = () => {
   const fetchAds = async () => {
     try {
       const response = await getAds();
-      setAds(response.data);
-      setFilteredAds(response.data);
+      const presentAds = response.data.filter((ad) =>
+        dayjs(ad.endDate).isAfter(dayjs(), "day")
+      );
+      setAds(presentAds);
+      setFilteredAds(presentAds);
       setLoading(false);
     } catch (error) {
       console.log(error);

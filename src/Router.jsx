@@ -26,6 +26,8 @@ import SellerProfile from "./pages/seller/SellerProfile";
 import AdminProfile from "./pages/admin/AdminProfile";
 import AdminProduct from "./pages/admin/AdminProduct";
 import SellerAdvert from "./pages/seller/SellerAdvert";
+import CategoryProducts from "./components/Customer/CategoryProducts";
+import AdminCategory from "./pages/admin/AdminCategory";
 
 const Router = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); // Get auth state from Redux
@@ -45,6 +47,10 @@ const Router = () => {
         {
           path: "/product/:id",
           element: <ProductPage />,
+        },
+        {
+          path: "/category/:id",
+          element: <CategoryProducts />,
         },
         {
           path: "/wishlist",
@@ -105,10 +111,6 @@ const Router = () => {
       element: <AdminLayout />,
       children: [
         {
-          element: <AdminDashboard />,
-          index: true,
-        },
-        {
           path: "/admin/users",
           element: <AdminUsers />,
         },
@@ -121,8 +123,8 @@ const Router = () => {
           element: <AdminProduct />,
         },
         {
-          path: "/admin/orders",
-          element: <AdminOrder />,
+          path: "/admin/categories",
+          element: <AdminCategory />,
         },
         {
           path: "/admin/reviews",

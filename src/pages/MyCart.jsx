@@ -1,41 +1,58 @@
 import React, { useState, useEffect } from "react";
-import { getCartItems } from "../lib/api";
+import { getActiveAds, getCartItems } from "../lib/api"; // Assume you have an API function for fetching active ads
 import { useSelector } from "react-redux";
 import CartItem from "../components/Customer/Cart/CartItem";
+import dayjs from "dayjs";
 
 const MyCart = () => {
   const user = useSelector((state) => state.auth.user);
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [flag, setFlag] = useState(0);
+  const [adverts, setAdverts] = useState([]);
 
   useEffect(() => {
-    const fetchCartItems = async () => {
+    const fetchData = async () => {
       try {
-        console.log("Fetching cart items...");
-        const response = await getCartItems(user._id);
-        console.log("Fetched data:", response.data);
-        setCartItems(response.data);
-        calculateTotal(response.data);
+        // Fetch cart items and active adverts simultaneously
+        const [cartResponse, advertsResponse] = await Promise.all([
+          getCartItems(user._id),
+          getActiveAds(),
+        ]);
+
+        setCartItems(cartResponse.data);
+        setAdverts(advertsResponse.data);
+        calculateTotal(cartResponse.data, advertsResponse.data);
       } catch (error) {
-        console.error("Error fetching cart items:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchCartItems();
+    fetchData();
   }, [flag, user._id]);
 
-  // Calculate total price
-  const calculateTotal = (items) => {
+  // Get advertised price for a product
+  const getAdvertisedPrice = (productId) => {
+    const currentDate = dayjs();
+    const activeAdvert = adverts.find(
+      (ad) =>
+        ad.productId._id === productId &&
+        dayjs(ad.startDate).isBefore(currentDate) &&
+        dayjs(ad.endDate).isAfter(currentDate)
+    );
+
+    return activeAdvert ? activeAdvert.price : null;
+  };
+
+  // Calculate total price considering advertisements
+  const calculateTotal = (items, advertisements) => {
     const total = items.reduce((sum, item) => {
-      return sum + item.productId.price * item.quantity;
+      const advertisedPrice = getAdvertisedPrice(item.productId._id);
+      const price = advertisedPrice || item.productId.price;
+      return sum + price * item.quantity;
     }, 0);
     setTotalPrice(total);
   };
-
-  useEffect(() => {
-    console.log(flag);
-  }, [flag]);
 
   return (
     <div className="w-[80%] mx-auto p-4 flex md:flex-row flex-col md:justify-between gap-5 ">
@@ -46,7 +63,12 @@ const MyCart = () => {
         ) : (
           <div>
             {cartItems.map((item) => (
-              <CartItem item={item} flag={flag} setFlag={setFlag} />
+              <CartItem
+                item={item}
+                flag={flag}
+                setFlag={setFlag}
+                advertisedPrice={getAdvertisedPrice(item.productId._id)}
+              />
             ))}
           </div>
         )}
@@ -64,19 +86,40 @@ const MyCart = () => {
               </tr>
             </thead>
             <tbody>
-              {cartItems.map((item) => (
-                <tr key={item._id} className="border border-gray-300">
-                  <td className="p-2 border border-gray-300">
-                    {item.productId.name}
-                  </td>
-                  <td className="p-2 border border-gray-300 text-center">
-                    {item.quantity}
-                  </td>
-                  <td className="p-2 border border-gray-300 text-right">
-                    ${item.productId.price * item.quantity}
-                  </td>
-                </tr>
-              ))}
+              {cartItems.map((item) => {
+                const advertisedPrice = getAdvertisedPrice(item.productId._id);
+                const price = advertisedPrice || item.productId.price;
+
+                return (
+                  <tr key={item._id} className="border border-gray-300">
+                    <td className="p-2 border border-gray-300">
+                      {item.productId.name}
+                      {advertisedPrice && (
+                        <span className="ml-2 text-green-600 text-sm">
+                          (Special Offer!)
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-2 border border-gray-300 text-center">
+                      {item.quantity}
+                    </td>
+                    <td className="p-2 border border-gray-300 text-right">
+                      {advertisedPrice ? (
+                        <>
+                          <span className="line-through text-gray-400 mr-2">
+                            ${item.productId.price * item.quantity}
+                          </span>
+                          <span className="text-green-600">
+                            ${advertisedPrice * item.quantity}
+                          </span>
+                        </>
+                      ) : (
+                        `$${item.productId.price * item.quantity}`
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           <hr className="my-4" />

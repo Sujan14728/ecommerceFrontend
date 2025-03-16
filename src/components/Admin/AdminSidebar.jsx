@@ -10,12 +10,6 @@ import { CgProfile } from "react-icons/cg";
 
 const items = [
   {
-    key: "1",
-    icon: <MdDashboard />,
-    label: "Dashboard",
-    path: "/admin",
-  },
-  {
     key: "2",
     icon: <LuUsersRound />,
     label: "All Users",
@@ -35,15 +29,15 @@ const items = [
   },
   {
     key: "5",
-    icon: <FaRegStar />,
-    label: "Reviews",
-    path: "/admin/reviews",
+    icon: <AiOutlineProduct />,
+    label: "Category Management",
+    path: "/admin/categories",
   },
   {
     key: "6",
-    icon: <LuPackage />,
-    label: "Orders",
-    path: "/admin/orders",
+    icon: <FaRegStar />,
+    label: "Reviews",
+    path: "/admin/reviews",
   },
 
   {

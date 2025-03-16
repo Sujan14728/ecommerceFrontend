@@ -1,16 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Table,
-  Button,
-  Input,
-  Space,
-  Tag,
-  Modal,
-  Form,
-  DatePicker,
-  Select,
-  message,
-} from "antd";
+import { Table, Button, Input, Space, Tag, Modal, Select, message } from "antd";
 import {
   SearchOutlined,
   PlusOutlined,
@@ -21,7 +10,6 @@ import {
 import {
   createAd,
   deleteAd,
-  getAds,
   getAdsByUser,
   getProductByUserId,
   updateAd,
@@ -31,6 +19,7 @@ import { formatDate } from "../../utils/formatDate";
 import AdPreviewModal from "../../components/Admin/AdPreviewModal";
 import PastAdsTable from "../../components/Admin/PastAdsTable";
 import { useSelector } from "react-redux";
+import dayjs from "dayjs";
 const { Column } = Table;
 
 const { confirm } = Modal;
@@ -54,8 +43,11 @@ const SellerAdvert = () => {
   const fetchAds = async () => {
     try {
       const response = await getAdsByUser(user._id);
-      setAds(response.data);
-      setFilteredAds(response.data);
+      const presentAds = response.data.filter((ad) =>
+        dayjs(ad.endDate).isAfter(dayjs(), "day")
+      );
+      setAds(presentAds);
+      setFilteredAds(presentAds);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -261,7 +253,7 @@ const SellerAdvert = () => {
           ad={selectedAd}
         />
       </div>
-      <PastAdsTable />
+      {/* <PastAdsTable /> */}
     </div>
   );
 };

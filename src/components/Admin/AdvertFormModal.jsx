@@ -1,8 +1,6 @@
 import { Modal, Form, Input, Select, DatePicker } from "antd";
 import dayjs from "dayjs";
-import moment from "moment";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
@@ -15,7 +13,6 @@ const AdvertFormModal = ({
 }) => {
   const [form] = Form.useForm();
   const [currentPrice, setCurrentPrice] = useState(null);
-  const user = useSelector((state) => state.auth.user);
 
   console.log(initialValues);
 

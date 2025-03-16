@@ -1,8 +1,12 @@
-import React, { useState } from "react";
-import { removeFromCart, updateCartItem } from "../../../lib/api";
+import React, { useEffect, useState } from "react";
+import {
+  getActiveAdByProductId,
+  removeFromCart,
+  updateCartItem,
+} from "../../../lib/api";
 import { FaTrashAlt } from "react-icons/fa";
 
-const CartItem = ({ item, flag, setFlag }) => {
+const CartItem = ({ item, flag, setFlag, advertisedPrice }) => {
   const [quantity, setQuantity] = useState(item.quantity);
   const handleRemoveFromCart = async (productId) => {
     try {
@@ -42,7 +46,14 @@ const CartItem = ({ item, flag, setFlag }) => {
         />
         <div>
           <h3 className="font-semibold">{item?.productId.name}</h3>
-          <span>${item?.productId?.price}</span>
+          {!advertisedPrice ? (
+            <span>${item?.productId?.price}</span>
+          ) : (
+            <div className="flex gap-2">
+              <span className="line-through">${item?.productId?.price}</span>
+              <span className="text-green-600 ">${advertisedPrice}</span>
+            </div>
+          )}
           <div className="flex items-center gap-4 mt-2">
             <button
               className="bg-gray-300 px-2 py-1 rounded-lg"

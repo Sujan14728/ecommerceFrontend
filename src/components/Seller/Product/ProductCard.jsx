@@ -9,7 +9,7 @@ import {
 import { useSelector } from "react-redux";
 import { CiHeart, CiShoppingCart } from "react-icons/ci";
 
-const ProductCard = ({ product, flag, setFlag }) => {
+const ProductCard = ({ product, flag, setFlag, advertisedPrice }) => {
   const user = useSelector((state) => state.auth.user);
   const [wishlistedProducts, setWishlistedProducts] = useState([]);
 
@@ -78,7 +78,21 @@ const ProductCard = ({ product, flag, setFlag }) => {
         <div className="flex flex-col gap-1">
           <h3 className="font-semibold mt-2">{product.name}</h3>
           <p className="text-gray-600">{product.brand}</p>
-          <span className="font-bold text-blue-600">${product.price}</span>
+          {advertisedPrice ? (
+            <div className="flex items-center gap-2">
+              <span className="line-through text-gray-400">
+                ${product.price}
+              </span>
+              <span className="text-green-600 font-bold">
+                ${advertisedPrice}
+              </span>
+              <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                Sale
+              </span>
+            </div>
+          ) : (
+            <span className="font-semibold">${product.price}</span>
+          )}
         </div>
       </a>
       <div className="flex justify-center gap-4 ">
