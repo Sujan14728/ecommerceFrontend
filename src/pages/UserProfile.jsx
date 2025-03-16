@@ -1,24 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs } from "antd";
 import PersonalInfo from "../components/Customer/Profile/PersonalInfo";
 import PasswordManager from "../components/Customer/Profile/PasswordManager";
-import Wishlist from "../components/Customer/Profile/Wishlist";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import Orders from "../components/Customer/Profile/Orders";
+
 const UserProfile = () => {
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState(params.get("tab") || "1");
+
+  useEffect(() => {
+    navigate("/profile", { replace: true });
+  }, [activeTab, navigate]);
+
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+    navigate("/profile", { replace: true });
+  };
   const tabsData = [
     {
       label: "Personal Information",
       key: "1",
-      children: <PersonalInfo />, // Component for this tab
+      children: <PersonalInfo />,
     },
     {
       label: "Password Manager",
       key: "2",
-      children: <PasswordManager />, // Component for this tab
+      children: <PasswordManager />,
     },
     {
-      label: "My Wishlist",
+      label: "My Orders",
       key: "3",
-      children: <Wishlist />, // Component for this tab
+      children: <Orders />,
     },
   ];
   return (
@@ -26,6 +40,8 @@ const UserProfile = () => {
       <div className="w-[80%]">
         <Tabs
           tabPosition={"left"}
+          onChange={handleTabChange}
+          activeKey={activeTab}
           items={tabsData.map((tab) => ({
             label: tab.label,
             key: tab.key,

@@ -124,6 +124,7 @@ const AdminUsers = () => {
               { value: "all", label: "All Roles" },
               { value: "customer", label: "Customer" },
               { value: "seller", label: "Seller" },
+              { value: "admin", label: "Admin" },
             ]}
           />
         </div>
@@ -161,6 +162,7 @@ const AdminUsers = () => {
           filters={[
             { text: "Seller", value: "seller" },
             { text: "Customer", value: "customer" },
+            { text: "Admin", value: "admin" },
           ]}
           onFilter={(value, record) => record.userType === value}
         />

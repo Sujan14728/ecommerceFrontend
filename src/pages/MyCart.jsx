@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { getActiveAds, getCartItems } from "../lib/api"; // Assume you have an API function for fetching active ads
+import { createOrder, getActiveAds, getCartItems } from "../lib/api"; // Assume you have an API function for fetching active ads
 import { useSelector } from "react-redux";
 import CartItem from "../components/Customer/Cart/CartItem";
 import dayjs from "dayjs";
+import { Modal, notification } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const MyCart = () => {
   const user = useSelector((state) => state.auth.user);
@@ -10,7 +12,8 @@ const MyCart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [flag, setFlag] = useState(0);
   const [adverts, setAdverts] = useState([]);
-
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -22,6 +25,7 @@ const MyCart = () => {
 
         setCartItems(cartResponse.data);
         setAdverts(advertsResponse.data);
+
         calculateTotal(cartResponse.data, advertsResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -30,7 +34,6 @@ const MyCart = () => {
 
     fetchData();
   }, [flag, user._id]);
-
   // Get advertised price for a product
   const getAdvertisedPrice = (productId) => {
     const currentDate = dayjs();
@@ -40,18 +43,68 @@ const MyCart = () => {
         dayjs(ad.startDate).isBefore(currentDate) &&
         dayjs(ad.endDate).isAfter(currentDate)
     );
-
     return activeAdvert ? activeAdvert.price : null;
   };
 
   // Calculate total price considering advertisements
   const calculateTotal = (items, advertisements) => {
     const total = items.reduce((sum, item) => {
-      const advertisedPrice = getAdvertisedPrice(item.productId._id);
-      const price = advertisedPrice || item.productId.price;
+      const activeAdvert = advertisements.find(
+        (ad) =>
+          ad.productId._id === item.productId._id &&
+          dayjs(ad.startDate).isBefore(dayjs()) &&
+          dayjs(ad.endDate).isAfter(dayjs())
+      );
+
+      const price = activeAdvert ? activeAdvert.price : item.productId.price;
       return sum + price * item.quantity;
     }, 0);
+
     setTotalPrice(total);
+  };
+
+  const handleCheckout = async () => {
+    Modal.confirm({
+      title: "Order Products",
+      content: "Are you sure you want to place the order?",
+      okText: "Yes",
+      okType: "primary",
+      async onOk() {
+        try {
+          setLoading(true);
+
+          const processedItems = cartItems.map((item) => ({
+            productId: item.productId._id,
+            quantity: item.quantity,
+            price: item.productId.price,
+            advertisedPrice: getAdvertisedPrice(item.productId._id) || null, // Add advertised price if available
+          }));
+
+          const orderData = {
+            customerId: user._id,
+            items: processedItems,
+            totalPrice: totalPrice,
+          };
+
+          console.log(orderData);
+          const response = await createOrder(orderData);
+
+          notification.success({
+            message: "Order Placed!",
+          });
+
+          navigate("/profile?tab=3");
+        } catch (error) {
+          notification.error({
+            message: "Order Failed",
+            description:
+              error.response?.data?.message || "Something went wrong",
+          });
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   };
 
   return (
@@ -127,7 +180,10 @@ const MyCart = () => {
             <span>Total Price:</span>
             <span>${totalPrice}</span>
           </div>
-          <button className="mt-4 w-full bg-blue-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-blue-700">
+          <button
+            onClick={handleCheckout}
+            className="mt-4 w-full bg-blue-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-blue-700"
+          >
             Proceed to Checkout
           </button>
         </div>

@@ -219,6 +219,67 @@ export const deleteCategory = async (categoryId) => {
   }
 };
 
+//Orders apis
+export const createOrder = async (orderData) => {
+  try {
+    const response = await api.post("/orders", orderData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating order:", error);
+    throw error;
+  }
+};
+
+export const getAllOrders = async () => {
+  try {
+    const response = await api.get("/orders");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    throw error;
+  }
+};
+
+export const getOrderById = async (orderId) => {
+  try {
+    const response = await api.get(`/orders/${orderId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    throw error;
+  }
+};
+
+export const getOrderByUserId = async (userId) => {
+  try {
+    const response = await api.get(`/orders/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    throw error;
+  }
+};
+
+export const updateOrder = async (orderId, updatedOrderData) => {
+  try {
+    const response = await api.put(`/orders/${orderId}`, updatedOrderData);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating order:", error);
+    throw error;
+  }
+};
+
+export const deleteOrder = async (orderId) => {
+  try {
+    const response = await api.delete(`/orders/${orderId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    throw error;
+  }
+};
+
 //Cart apis
 export const getCartItems = async (userId) => {
   try {

@@ -34,14 +34,14 @@ const items = [
     path: "/admin/categories",
   },
   {
-    key: "6",
+    key: "7",
     icon: <FaRegStar />,
     label: "Reviews",
     path: "/admin/reviews",
   },
 
   {
-    key: "7",
+    key: "8",
     icon: <CgProfile />,
     label: "Profile",
     path: "/admin/profile",
