@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Table, Rate, Input, Button, Modal, Tag, message } from "antd";
 import { SearchOutlined, MessageOutlined } from "@ant-design/icons";
 import { deleteReview, getAllReviews } from "../../lib/api";
+import { useSelector } from "react-redux";
+
 const SellerReviews = () => {
+  const user = useSelector((state) => state.auth.user);
+  const sellerId = user?._id;
   const [reviews, setReviews] = useState([]);
   const [filteredReviews, setFilteredReviews] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -12,9 +16,14 @@ const SellerReviews = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
+        setLoading(true);
         const response = await getAllReviews();
-        setReviews(response.data);
-        setFilteredReviews(response.data);
+        console.log(response.data);
+        const sellerReviews = response.data.filter(
+          (review) => review.productId?.userId === sellerId
+        );
+        setReviews(sellerReviews);
+        setFilteredReviews(sellerReviews);
       } catch (err) {
         console.log(err);
         message.error("Failed to fetch reviews");
@@ -23,8 +32,12 @@ const SellerReviews = () => {
       }
     };
 
-    fetchReviews();
-  }, [flag]);
+    if (sellerId) {
+      fetchReviews();
+    } else {
+      setLoading(false);
+    }
+  }, [flag, sellerId]); // Include sellerId in dependencies
 
   useEffect(() => {
     setFilteredReviews(
@@ -50,7 +63,7 @@ const SellerReviews = () => {
       onOk: async () => {
         try {
           await deleteReview(reviewId);
-          setReviews(reviews.filter((review) => review.key !== reviewId));
+          setReviews(reviews.filter((review) => review._id !== reviewId)); // Use _id instead of key
           setFlag(flag + 1);
         } catch (error) {
           console.error("Error deleting review:", error);
@@ -116,7 +129,7 @@ const SellerReviews = () => {
         columns={columns}
         dataSource={filteredReviews}
         pagination={{ pageSize: 5 }}
-        rowKey="key"
+        rowKey="_id" // Ensure rowKey is set to _id
       />
     </div>
   );
