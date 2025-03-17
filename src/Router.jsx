@@ -28,6 +28,7 @@ import AdminProduct from "./pages/admin/AdminProduct";
 import SellerAdvert from "./pages/seller/SellerAdvert";
 import CategoryProducts from "./components/Customer/CategoryProducts";
 import AdminCategory from "./pages/admin/AdminCategory";
+import SellerReviews from "./pages/seller/SellerReviews";
 
 const Router = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); // Get auth state from Redux
@@ -99,6 +100,10 @@ const Router = () => {
         {
           path: "/seller/advert",
           element: <SellerAdvert />,
+        },
+        {
+          path: "/seller/reviews",
+          element: <SellerReviews />,
         },
         {
           path: "/seller/profile",

@@ -42,7 +42,10 @@ const Navbar = () => {
             )}
           </div>
           {isAuthenticated && user.userType === "seller" && (
-            <Link to={"/seller/dashboard"}>Dashboard</Link>
+            <Link to={"/seller/dashboard"}>Seller Dashboard</Link>
+          )}
+          {isAuthenticated && user.userType === "admin" && (
+            <Link to={"/admin/users"}>Admin Dashboard</Link>
           )}
         </div>
       </div>

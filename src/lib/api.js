@@ -381,6 +381,16 @@ export const getReviewsForProduct = async (productId) => {
   }
 };
 
+export const getReviewsByUserId = async (userId) => {
+  try {
+    const response = await api.get(`/reviews/user/${userId}/reviews`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching reviews for product:", error);
+    throw error;
+  }
+};
+
 export const addReview = async (productId, reviewData) => {
   try {
     const response = await api.post(

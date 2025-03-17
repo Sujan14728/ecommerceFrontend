@@ -8,12 +8,6 @@ import { CgProfile } from "react-icons/cg";
 
 const items = [
   {
-    key: "1",
-    icon: <MdDashboard />,
-    label: "Dashboard",
-    path: "/seller/dashboard",
-  },
-  {
     key: "2",
     icon: <MdProductionQuantityLimits />,
     label: "Products",
@@ -27,22 +21,16 @@ const items = [
   },
   {
     key: "4",
+    icon: <FaRegStar />,
+    label: "Reviews",
+    path: "/seller/reviews",
+  },
+  {
+    key: "5",
     icon: <CgProfile />,
     label: "Profile",
     path: "/seller/profile",
   },
-  // {
-  //   key: "5",
-  //   icon: <LuPackage />,
-  //   label: "Orders",
-  //   path: "/seller/orders",
-  // },
-  // {
-  //   key: "6",
-  //   icon: <FaRegStar />,
-  //   label: "Reviews",
-  //   path: "/seller/reviews",
-  // },
 ];
 const Sidebar = () => {
   const navigate = useNavigate();

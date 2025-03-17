@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { userLogin, userSignup } from "../lib/api";
-import { Button, Input, Select} from "antd";
+import { Button, Input, Select } from "antd";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../lib/store/slices/authSlice";
@@ -39,12 +39,17 @@ const AuthPage = () => {
           password: formData.password,
         });
         const { token, data } = response;
+        console.log(data);
         dispatch(login({ token, user: data }));
+        alert("Login Successful");
+        if (data.userType === "seller") navigate("/seller/products");
+        else if (data.userType === "admin") navigate("/admin/users");
+        else navigate("/");
       } else {
         await userSignup(formData);
+        alert("Signup Successful");
+        navigate(0);
       }
-      alert(isLogin ? "Login successful" : "Signup successful");
-      navigate("/");
     } catch (err) {
       console.log(err);
       setError("An error occurred. Please try again.");
